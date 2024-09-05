@@ -3,7 +3,7 @@ version: '3.8'
 services:
   user-ms:
     build: ./
-    container_name: ms-user
+    container_name: user-ms
     restart: always
     ports:
       - 8080:8080
