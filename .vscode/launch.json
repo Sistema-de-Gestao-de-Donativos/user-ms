@@ -18,18 +18,6 @@
                 "--reload",
             ],
         },
-        {
-            "name": "Debug: Pytest",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "pytest",
-            "args": [
-                "--cov-report=html:${workspace}/app/tests/htmlcov",
-                "-v",
-                "-s",
-                "-W",
-                "ignore::DeprecationWarning",
-            ],
-        }
+        
     ]
 }
