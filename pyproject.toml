@@ -1,0 +1,28 @@
+[project]
+name = "user"
+version = "0.0.1"
+authors = [{ name = "Ramiro e Vinicius", email = "fulano@pucrs.com" }]
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = ["user"]
+dependencies = [
+    "fastapi~=0.111",
+    "loguru~=0.7",
+    "pydantic>=2,<3",
+    "pydantic-settings",
+    "sse-starlette>=2,<3",
+    "uvicorn==0.29.*",
+]
+
+
+[tool.pytest.ini_options]
+pythonpath = "."
+testpaths = ["tests"]
+addopts = [
+    "--import-mode=importlib",
+    "--cov=src",
+    "--cov-report=html",
+    "--disable-warnings",
+]
+asyncio_mode = "auto"
