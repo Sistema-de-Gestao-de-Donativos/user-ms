@@ -1,13 +1,24 @@
-from fastapi import FastAPI
-from .db import models, engine
-from .routes.user_routes import router as user_router
+import uvicorn
 
-models.Base.metadata.create_all(bind=engine)
+from .dependencies.logging import get_logger_config
+from .settings import Settings
 
-app = FastAPI()
 
-app.include_router(user_router, prefix="/api")
+def main() -> None:
+    settings = Settings()  # type: ignore
+    uvicorn.run(
+        app="users_ms:create_app",
+        factory=True,
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.RELOAD,
+        workers=settings.WORKERS,
+        log_config=get_logger_config(),
+        use_colors=True,
+        proxy_headers=True,
+        forwarded_allow_ips="*",
+    )
+
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    main()

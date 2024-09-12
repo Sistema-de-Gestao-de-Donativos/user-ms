@@ -1,7 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from beanie import init_beanie
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"  # Use your database URL
+from .users import models
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+async def init_db(database: AsyncIOMotorDatabase) -> None:
+    await init_beanie(database=database, document_models=[models.User])
