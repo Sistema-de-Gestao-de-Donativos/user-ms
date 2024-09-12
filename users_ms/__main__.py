@@ -1,32 +1,13 @@
-import pathlib
-import sys
+from fastapi import FastAPI
+from .db import models, engine
+from .routes.user_routes import router as user_router
 
-import uvicorn
-from pydantic import ValidationError
+models.Base.metadata.create_all(bind=engine)
 
-from .settings import Settings
+app = FastAPI()
 
-
-def main():
-    sets = Settings()  # type: ignore
-
-    uvicorn.run(
-        "users_ms:create_app",
-        factory=True,
-        reload=sets.RELOAD,
-        host=sets.HOST,
-        port=sets.PORT,
-        workers=sets.WORKERS,
-    )
-
+app.include_router(user_router, prefix="/api")
 
 if __name__ == "__main__":
-    try:
-        main()
-    except ValidationError as e:
-        directory = pathlib.Path(".").absolute()
-        print(
-            f"The .env file is invalid or could not be "
-            f"found on the current directory={directory}.\nValidation: {e}",
-            file=sys.stderr,
-        )
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

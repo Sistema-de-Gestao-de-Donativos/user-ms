@@ -2,19 +2,19 @@
 name = "user"
 version = "0.0.1"
 authors = [{ name = "Ramiro e Vinicius", email = "fulano@pucrs.com" }]
-description = ""
+description = "A FastAPI project for user management"
 readme = "README.md"
 requires-python = ">=3.12"
 keywords = ["user"]
 dependencies = [
     "fastapi~=0.111",
     "loguru~=0.7",
-    "pydantic>=2,<3",
+    "pydantic[email]>=2,<3",
     "pydantic-settings",
     "sse-starlette>=2,<3",
     "uvicorn==0.29.*",
+    "sqlalchemy>=1.4,<2.0",
 ]
-
 
 [tool.pytest.ini_options]
 pythonpath = "."
@@ -26,3 +26,7 @@ addopts = [
     "--disable-warnings",
 ]
 asyncio_mode = "auto"
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
