@@ -10,6 +10,8 @@ async def get_user(user_id: PydanticObjectId) -> models.User | None:
 async def get_all_users() -> list[models.User]:
     return await models.User.all().to_list()
 
+async def get_user_by_email(email: str) -> models.User | None:
+    return await models.User.find_one({"email": email})
 
 async def insert_user(user: schemas.User) -> bool:
     new_user = models.User(**user.model_dump())
