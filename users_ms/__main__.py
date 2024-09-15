@@ -1,11 +1,12 @@
 import uvicorn
 
-from .dependencies.logging import get_logger_config
 from .settings import Settings
+from . import db
 
 
 def main() -> None:
     settings = Settings()  # type: ignore
+    db.init_db(settings.MONGODB_URL, settings.MONGODB_DB)
     uvicorn.run(
         app="users_ms:create_app",
         factory=True,
@@ -13,7 +14,6 @@ def main() -> None:
         port=settings.PORT,
         reload=settings.RELOAD,
         workers=settings.WORKERS,
-        log_config=get_logger_config(),
         use_colors=True,
         proxy_headers=True,
         forwarded_allow_ips="*",
