@@ -1,50 +1,46 @@
-from beanie import PydanticObjectId
+from fastapi import HTTPException
+from pymongo.errors import DuplicateKeyError
 
-from ...db.users import models, schemas
+from ..utils import get_collection
+from .models import UserDAO
+from .schemas import User
 
 
-async def get_user(user_id: PydanticObjectId) -> models.User | None:
-    return await models.User.get(user_id)
-
-
-async def get_all_users() -> list[models.User]:
-    return await models.User.all().to_list()
-
-async def get_user_by_email(email: str) -> models.User | None:
-    return await models.User.find_one({"email": email})
-
-async def insert_user(user: schemas.User) -> bool:
-    new_user = models.User(**user.model_dump())
+def create_user(user: User) -> UserDAO:
+    user_dao = UserDAO(**user.model_dump())
+    collection = get_collection(UserDAO.collection_name())
     try:
-        await new_user.save()
-        return True
-    except Exception:
-        return False
+        collection.insert_one(user_dao.model_dump(by_alias=True))
+    except DuplicateKeyError:
+        raise HTTPException(status_code=409, detail="User already exists")
+
+    return user_dao
 
 
-async def delete_user(user_id: PydanticObjectId) -> bool:
-    user = await models.User.get(user_id)
-    if user:
-        await user.delete()
-        return True
-    return False
+def read_user(user_id: str) -> UserDAO:
+    collection = get_collection(UserDAO.collection_name())
+    user = collection.find_one({"_id": user_id})
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return UserDAO(**user)
 
 
-async def update_user(user_id: PydanticObjectId, user: schemas.User) -> bool:
-    old_user: models.User | None = await models.User.get(user_id)
-    if old_user:
-        for field, value in user.model_dump().items():
-            setattr(old_user, field, value)
-        await old_user.save()
-        return True
-    return False
+def read_users(role: str, codEntidade: str) -> list[UserDAO]:
+    collection = get_collection(UserDAO.collection_name())
+    users = collection.find({"role": role, "codEntidade": codEntidade})
+
+    return [UserDAO(**user) for user in users]
 
 
-async def patch_user(user_id: PydanticObjectId, user: schemas.PatchUser) -> bool:
-    old_user: models.User | None = await models.User.get(user_id)
-    if old_user:
-        for field, value in user.model_dump(exclude_unset=True).items():
-            setattr(old_user, field, value)
-        await old_user.save()
-        return True
-    return False
+def delete_user(user_id: str) -> None:
+    collection = get_collection(UserDAO.collection_name())
+    collection.delete_one({"_id": user_id})
+
+
+def get_user_by_email(email: str) -> UserDAO:
+    collection = get_collection(UserDAO.collection_name())
+    user = collection.find_one({"email": email})
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return UserDAO(**user)
