@@ -9,7 +9,7 @@ def init_app(app: FastAPI) -> None:
 
 
 def get_router() -> APIRouter:
-    api_router = APIRouter()
+    api_router = APIRouter(prefix="/v1")
     api_router.include_router(health.health_router)
     api_router.include_router(users.users_router)
     return api_router

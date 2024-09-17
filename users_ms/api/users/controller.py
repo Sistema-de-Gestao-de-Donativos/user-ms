@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import HTTPException
 from pymongo.errors import DuplicateKeyError
 
@@ -26,21 +28,37 @@ def read_user(user_id: str) -> UserDAO:
     return UserDAO(**user)
 
 
-def read_users(role: str, codEntidade: str) -> list[UserDAO]:
+def read_many(
+    user_id: Optional[str],
+    role: Optional[str],
+    codEntidade: Optional[int],
+    phone: Optional[str],
+    email: Optional[str],
+):
+    collection = get_collection(UserDAO.collection_name())
+    filters = {}
+    if user_id:
+        filters["_id"] = user_id
+    if role:
+        filters["role"] = role
+    if codEntidade:
+        filters["codEntidade"] = codEntidade
+    if phone:
+        filters["phone"] = phone
+    if email:
+        filters["email"] = email
+
+    users = collection.find(filters)
+    return [UserDAO(**user) for user in users]
+
+
+def read_users(role: str, codEntidade: int) -> list[UserDAO]:
     collection = get_collection(UserDAO.collection_name())
     users = collection.find({"role": role, "codEntidade": codEntidade})
-
     return [UserDAO(**user) for user in users]
 
 
 def delete_user(user_id: str) -> None:
     collection = get_collection(UserDAO.collection_name())
     collection.delete_one({"_id": user_id})
-
-
-def get_user_by_email(email: str) -> UserDAO:
-    collection = get_collection(UserDAO.collection_name())
-    user = collection.find_one({"email": email})
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return UserDAO(**user)
+    collection.delete_one({"_id": user_id})
