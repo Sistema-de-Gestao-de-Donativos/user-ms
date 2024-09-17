@@ -1,12 +1,10 @@
 import uvicorn
 
 from .settings import Settings
-from . import db
 
 
 def main() -> None:
     settings = Settings()  # type: ignore
-    db.init_db(settings.MONGODB_URL, settings.MONGODB_DB)
     uvicorn.run(
         app="users_ms:create_app",
         factory=True,

@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from .api.users.routes import router as users_router
+
+from . import api, dependencies
+
 
 def create_app() -> FastAPI:
-    app = FastAPI()
-
-    app.include_router(users_router)
-
+    app = FastAPI(title="Users Microservice", version="0.0.1")
+    dependencies.init_app(app)
+    api.init_app(app)
     return app

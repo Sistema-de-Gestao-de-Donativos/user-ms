@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 
-from . import health
+from . import db
+
+# from . import auth
 
 
 def init_app(app: FastAPI) -> None:
-    app.include_router(health.router)
+    db.init_app()
