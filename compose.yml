@@ -1,0 +1,26 @@
+services:
+  app:
+    container_name: "users_ms"
+    build:
+      context: ./
+      target: prod
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+      - 5678:5678
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_URI: "mongodb://mongodb:27017"
+
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
