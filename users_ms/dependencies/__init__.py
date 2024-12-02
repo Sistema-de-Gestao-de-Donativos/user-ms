@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 
-from . import db
-
-# from . import auth
+from . import auth, db
 
 
 def init_app(app: FastAPI) -> None:
     db.init_app()
+    auth.init_app(app)

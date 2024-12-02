@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     MONGO_DB_NAME: str = "users-ms"
     PORT: int = 8000
     API_SECRET: str = "super-secret"
+    JWT_PUBLIC_KEY: str = "jwt-public"
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        extra="ignore",
+        env_file="environments/.env",
+    )
