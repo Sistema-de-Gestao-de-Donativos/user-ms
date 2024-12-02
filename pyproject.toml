@@ -1,4 +1,11 @@
 [project]
+name = "user"
+version = "0.0.1"
+authors = [{ name = "Ramiro e Vinicius", email = "fulano@pucrs.com" }]
+description = "A FastAPI project for user management"
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = ["user"]
 dependencies = [
     "fastapi~=0.111",
     "requests~=2.26",
@@ -37,10 +44,3 @@ asyncio_mode = "auto"
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
-name = "user"
-version = "0.0.1"
-authors = [{ name = "Ramiro e Vinicius", email = "fulano@pucrs.com" }]
-description = "A FastAPI project for user management"
-readme = "README.md"
-requires-python = ">=3.12"
-keywords = ["user"]
